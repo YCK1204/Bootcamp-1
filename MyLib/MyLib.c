@@ -20,7 +20,7 @@ char* _Substr(char* str, size_t start) {
 	size_t len = strlen(str);
 	char* ret = (char*)malloc(sizeof(char) * (len + 1));
 	for (int i = 0; i < str[i]; i++)
-		ret[i] = str[i];
+		ret[i] = str[i + start];
 	ret[len] = 0;
 	return ret;
 }
@@ -136,4 +136,30 @@ char* StrJoin(char* s1, char* s2) {
 	for (int i = 0; s2[i]; i++) { ret[i + len1] = s2[i]; }
 	ret[len1 + len2] = 0;
 	return ret;
+}
+
+int StrFindByChar(char* str, char target, size_t pos) {
+	if (str == NULL)
+		return -1;
+	for (int i = pos; str[i]; i++)
+	{
+		if (str[i] == target)
+			return i;
+	}
+	return -1;
+}
+
+int StrFindByString(char* str, char* target, size_t pos) {
+	if (str == NULL)
+		return -1;
+	for (int i = pos; str[i]; i++)
+	{
+		for (int j = 0;; j++) {
+			if (target[j] == 0)
+				return i;
+			if (str[i + j] != target[j])
+				break;
+		}
+	}
+	return -1;
 }
