@@ -4,8 +4,8 @@ char* Trim(char* str) {
 	if (str == NULL)
 		return NULL;
 
-	int start = 0;
-	int end = strlen(str) - 1;
+	size_t start = 0;
+	size_t end = strlen(str) - 1;
 	while (str[start] && isspace(str[start]))
 		start++;
 	while (end > start && isspace(str[end]))
@@ -13,11 +13,11 @@ char* Trim(char* str) {
 	return Substr(str, start, end - start + 1);
 }
 
-char* _Substr(char* str, int start) {
-	if (str == NULL || start < 0)
+char* _Substr(char* str, size_t start) {
+	if (str == NULL)
 		return NULL;
 
-	int len = strlen(str);
+	size_t len = strlen(str);
 	char* ret = (char*)malloc(sizeof(char) * (len + 1));
 	for (int i = 0; i < str[i]; i++)
 		ret[i] = str[i];
@@ -25,10 +25,10 @@ char* _Substr(char* str, int start) {
 	return ret;
 }
 
-char* Substr(char* str, int start, int count) {
-	if (str == NULL || start < 0 || count < 0)
+char* Substr(char* str, size_t start, size_t count) {
+	if (str == NULL)
 		return NULL;
-	int len = strlen(str);
+	size_t len = strlen(str);
 
 	if (len < start || len - start < count)
 		return NULL;
@@ -129,8 +129,8 @@ char* StrJoin(char* s1, char* s2) {
 	if (s1 == NULL || s2 == NULL)
 		return NULL;
 
-	int len1 = strlen(s1);
-	int len2 = strlen(s2);
+	size_t len1 = strlen(s1);
+	size_t len2 = strlen(s2);
 	char* ret = (char*)malloc(sizeof(char) * (len1 + len2 + 1));
 	for (int i = 0; s1[i]; i++) { ret[i] = s1[i]; }
 	for (int i = 0; s2[i]; i++) { ret[i + len1] = s2[i]; }
