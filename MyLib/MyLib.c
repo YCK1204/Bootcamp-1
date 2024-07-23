@@ -17,7 +17,7 @@ char* _Substr(char* str, size_t start) {
 	if (str == NULL)
 		return NULL;
 
-	size_t len = strlen(str);
+	size_t len = strlen(str) - start;
 	char* ret = (char*)malloc(sizeof(char) * (len + 1));
 	for (size_t i = start; str[i]; i++)
 		ret[i - start] = str[i];
