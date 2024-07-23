@@ -19,8 +19,8 @@ char* _Substr(char* str, size_t start) {
 
 	size_t len = strlen(str);
 	char* ret = (char*)malloc(sizeof(char) * (len + 1));
-	for (int i = 0; i < str[i]; i++)
-		ret[i] = str[i + start];
+	for (size_t i = start; str[i]; i++)
+		ret[i - start] = str[i];
 	ret[len] = 0;
 	return ret;
 }
@@ -33,7 +33,7 @@ char* Substr(char* str, size_t start, size_t count) {
 	if (len < start || len - start < count)
 		return NULL;
 	char* ret = (char*)malloc(sizeof(char) * (count + 1));
-	for (int i = 0; i < count; i++) {
+	for (size_t i = 0; i < count; i++) {
 		ret[i] = str[i + start];
 	}
 	ret[count] = 0;
