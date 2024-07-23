@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="basicOperation.c" />
+    <ClCompile Include="bigInt.c" />
     <ClCompile Include="calculation.c" />
     <ClCompile Include="stack.c" />
     <ClCompile Include="test.c" />
@@ -135,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basicOperation.h" />
+    <ClInclude Include="bigInt.h" />
     <ClInclude Include="calculation.h" />
     <ClInclude Include="stack.h" />
     <ClInclude Include="test.h" />

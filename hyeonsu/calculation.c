@@ -5,7 +5,7 @@
 #include "stack.h"
 #include "basicOperation.h"
 #include "calculation.h"
-
+#include "bigInt.h"
 
 
 void RemoveSpace(char* pszInput)
@@ -119,23 +119,22 @@ char* CalculatePostfix(char* postfix, char* remain)
 	PszStack s;
 	PszStackInit(&s);
 	int cntPost = 0;
-	char* lhs = NULL;
-	char* rhs = NULL;
+	void* lhs = NULL;
+	void* rhs = NULL;
 	int flag = 0;
 
 	char* heapPtr[100] = { 0 };
 	size_t cntHeapPtr = 0;
 
 	while (postfix[cntPost] != '\0') {
-		
+
 		if (postfix[cntPost] == ' ' || isdigit(postfix[cntPost])) {
 			int cntTmp = 0;
 
 			if (postfix[cntPost] == ' ') { // 단항 연산 처리
 				cntPost++;
 			}
-			ReverseStringWithEndSpace(postfix + cntPost);			// Reverse해서 넣으면 연산하기 편함
-			PszStackPush(&s, (char*)(postfix+cntPost)); // int형 스택 대신 char* 스택 사용 (매우 큰 수를 문자열로 다루기 위함)
+			PszStackPush(&s, (void*)(postfix + cntPost)); // int형 스택 대신 char* 스택 사용 (매우 큰 수를 문자열로 다루기 위함)
 
 			while (postfix[cntPost] != ' ') {
 				cntPost++;
@@ -176,23 +175,8 @@ char* CalculatePostfix(char* postfix, char* remain)
 		}
 		return pszResult;
 	}
-	for (int i = 0; i < cntHeapPtr-1; ++i) { // 마지막 빼고 동적 할당 전부 해제
+	for (int i = 0; i < cntHeapPtr - 1; ++i) { // 마지막 빼고 동적 할당 전부 해제
 		free(heapPtr[i]);
 	}
-	return heapPtr[cntHeapPtr-1];
-}
-
-void ReverseStringWithEndSpace(char* pszTarget)
-{
-
-	int lenTarget = 0;
-	while (pszTarget[lenTarget] != ' ') {
-		lenTarget++;
-	}
-	char tmp;
-	for (int i = 0; i < lenTarget / 2; ++i) {
-		tmp = pszTarget[i];
-		pszTarget[i] = pszTarget[lenTarget - i - 1];
-		pszTarget[lenTarget - i - 1] = tmp;
-	}
+	return heapPtr[cntHeapPtr - 1];
 }

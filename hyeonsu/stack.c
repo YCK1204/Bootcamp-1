@@ -61,7 +61,7 @@ int PszStackIsFull(PszStack* s)
 		return 1;
 	return 0;
 }
-void PszStackPush(PszStack* s, char* value)
+void PszStackPush(PszStack* s, void* value)
 {
 	if (StackIsFull(s)) {
 		printf("stack full\n");

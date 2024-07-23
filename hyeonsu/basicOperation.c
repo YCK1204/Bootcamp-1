@@ -3,6 +3,7 @@
 #include <string.h>
 #include "stack.h"
 #include "basicOperation.h"
+#include "bigInt.h"
 
 
 
@@ -10,110 +11,32 @@
 
 char* Add(char* lhs, char* rhs) // 처음 ~ 공백이 나올때 까지: 해당 포인터의 num값
  { // 버그 아직 못잡음
-	char* pszResult = (char*)calloc(MAX_DIGIT_NUMBER,sizeof(char));
-	int lenLhs = strlen(lhs);
-	int lenRhs = strlen(rhs);
-	if (lhs[lenLhs-1] == '+') // 부호처리
-		lhs[lenLhs-- - 1] = '\0';
-	if (rhs[lenRhs - 1] == '+')
-		rhs[lenRhs-- - 1] = '\0';
-	if (lhs[lenLhs - 1] == '-' && isdigit(rhs[lenRhs - 1])) {
-		lhs[lenLhs - 1] = '\0';
-		free(pszResult);
-		return Sub(rhs, lhs);
-	}
-	if (rhs[lenRhs - 1] == '-' && isdigit(lhs[lenLhs - 1])) {
-		lhs[lenRhs - 1] = '\0';
-		free(pszResult);
-		return Sub(lhs, rhs);
-	}
-	int maxLen = (lenLhs > lenRhs) ? lenLhs : lenRhs;
-	char carry = 0;
-	char tmp;
-	int i;
-	for (int i = 0; i < maxLen; ++i) {
-		if (isdigit(lhs[i]) && isdigit(rhs[i])) {
-			tmp = lhs[i] - '0' + rhs[i] + carry;
-			carry = 0;
-			if (!isdigit(tmp)) {
-				tmp -= 10;
-				carry = 1;
-			}
-			pszResult[i] = tmp;
-		}
-		else if (isdigit(lhs[i])) {
-			pszResult[i] = lhs[i];
-		}
-		else if (isdigit(rhs[i])) {
-			pszResult[i] = rhs[i];
-		}
-		else {
-			if (lhs[i] == '-')
-				pszResult[i] = '-';
-			else
-				break;
-		}
-	}
+	char* pszResult = (BIGINT*)calloc(1, sizeof(BIGINT));
+	BIGINT result;
+	BIGINT_InitBigInt(&result);
 
-	ReverseString(pszResult);
-
+	BIGINT bigLhs;
+	BIGINT bigRhs;
+	BIGINT_StringToBigInt(&bigLhs, lhs);
+	BIGINT_StringToBigInt(&bigRhs, rhs);
+	BIGINT_Add(&result, &bigLhs, &bigRhs);
+	BIGINT_BigIntToString(&result, pszResult);
+	
 	return pszResult;
 }
 char* Sub(char* lhs, char* rhs)
-{  // 버그 아직 못잡음
+{ 
 	char* pszResult = (char*)calloc(MAX_DIGIT_NUMBER, sizeof(char));
-	int lenLhs = strlen(lhs);
-	int lenRhs = strlen(rhs);
-	if (lhs[lenLhs - 1] == '+') // 부호처리
-		lhs[lenLhs-- - 1] = '\0';
-	if (rhs[lenRhs - 1] == '+')
-		rhs[lenRhs-- - 1] = '\0';
-	if (rhs[lenRhs - 1] == '-' && isdigit(lhs[lenLhs - 1])) {
-		rhs[lenRhs - 1] = '\0';
-		free(pszResult);
-		return Add(lhs, rhs);
-	}
-	if (lhs[lenLhs - 1] == '-' && isdigit(rhs[lenRhs - 1])) {
-		rhs[lenRhs - 1] = '-';
-		free(pszResult);
-		return Add(lhs, rhs);
-	}
-	char* pszTmp = NULL;
-	if (lenLhs < lenRhs) { // lenRhs가 '-'로 인해 더 긴 경우도 생각해야함
-		pszTmp = lhs;
-		lhs = rhs;
-		rhs = pszTmp;
-	}
-	// 만약 길이가 같은 경우에도 처리해야함
-	char tmp;
-	char carry = 0;
-	for (int i = 0; i < lenLhs; ++i) {
-		if (isdigit(lhs[i]) && isdigit(rhs[i])) {
-			tmp = lhs[i] - rhs[i] - carry;
-			carry = 0;
-			if (tmp < 0) {
-				carry = 1;
-				tmp += 10;
-			}
-			tmp += '0';
-			pszResult[i] = tmp;
-		}
-		else if (isdigit(lhs[i])) {
-			if (carry == 1) {
-				lhs[i] -= carry;
-				carry = 0;
-			}
-			pszResult[i] = lhs[i];
-		}
-		else {
-			if ((lhs[i] == '-' && pszTmp == NULL) || lhs[i] != '-' && pszTmp != NULL)
-				pszResult[i] = '-';
-			else
-				break;
-		}
-	}
 
-	ReverseString(pszResult);
+	BIGINT result;
+	BIGINT_InitBigInt(&result);
+
+	BIGINT bigLhs;
+	BIGINT bigRhs;
+	BIGINT_StringToBigInt(&bigLhs, lhs);
+	BIGINT_StringToBigInt(&bigRhs, rhs);
+	BIGINT_Sub(&result, &bigLhs, &bigRhs);
+	BIGINT_BigIntToString(&result, pszResult);
 
 	return pszResult;
 }
