@@ -59,9 +59,7 @@ char* Getline(int fd) {
 			size = _msize(remainWords);
 			remainWords = (char*)realloc(remainWords, sizeof(char) * (size + n));
 			char* tmp = StrJoin(remainWords, buf);
-			free(remainWords);
-			remainWords = _strdup(tmp);
-			free(tmp);
+			ReplaceString(&remainWords, tmp);
 			size--;
 		}
 
@@ -74,10 +72,7 @@ char* Getline(int fd) {
 					remainWords = NULL;
 				}
 				else {
-					char* tmp = _Substr(remainWords, i + 1);
-					free(remainWords);
-					remainWords = _strdup(tmp);
-					free(tmp);
+					ReplaceString(remainWords, &remainWords[i + 1]);
 				}
 				return ret;
 			}
@@ -111,7 +106,7 @@ char** Split(char* str, int delim, bool trim) {
 		int start = j;
 		while (str[j] && str[j] != delim)
 			j++;
-		char *tmp = Substr(str, start, j - start);
+		char* tmp = Substr(str, start, j - start);
 		if (trim) {
 			ret[i] = Trim(tmp);
 			free(tmp);
@@ -162,4 +157,101 @@ int StrFindByString(char* str, char* target, size_t pos) {
 		}
 	}
 	return -1;
+}
+
+void ReplaceString(char** oldString, char* newString) {
+	if (*oldString == NULL || newString == NULL)
+		return;
+	char* tmp = _strdup(newString);
+	if (_msize(*oldString) > 0)
+		free(*oldString);
+	if (_msize(newString) > 0)
+		free(newString);
+	*oldString = tmp;
+}
+
+char* IntToAscii(int n) {
+	if (n == INT_MIN)
+		return _strdup("-2147483648");
+
+	int len = 1;
+	int tmp = n;
+	bool negative = (n < 0);
+	n = abs(n);
+
+	len += negative;
+	while ((tmp /= 10)) len++;
+	char* ret = (char*)malloc(sizeof(char) * (len + 1));
+	for (int i = len - 1; i >= 0 + negative; i--) {
+		ret[i] = n % 10 + '0';
+		n /= 10;
+	}
+	ret[len] = 0;
+	if (negative)
+		ret[0] = '-';
+	return ret;
+}
+
+char* CharToString(char c) {
+	char* ret = (char*)calloc(2, sizeof(char));
+	ret[0] = c;
+	return ret;
+}
+
+void _InsertString(char** original, size_t pos, char c) {
+	if (original == NULL || *original == NULL)
+		return NULL;
+	char* oldString = *original;
+	size_t len = strlen(oldString);
+	if (pos > len)
+		return NULL;
+
+	char* ret = (char*)calloc(len + 2, sizeof(char));
+	ret = MyStrncpy(ret, oldString, 0, pos);
+	ret[pos] = c;
+	size_t i = pos + 1;
+	for (; oldString[i - 1]; i++)
+		ret[i] = oldString[i - 1];
+	if (_msize(oldString) > 0)
+		free(oldString);
+	*original = ret;
+}
+
+void InsertString(char** original, size_t pos, char* str) {
+	if (original == NULL || *original == NULL || str == NULL)
+		return NULL;
+	char* oldString = *original;
+	size_t len1 = strlen(oldString);
+	size_t len2 = strlen(str);
+
+	char* ret = (char*)calloc(len1 + len2 + 1, sizeof(char));
+	ret = MyStrncpy(ret, oldString, 0, pos);
+	ret = MyStrcpy(ret, str, pos);
+	size_t i = pos + 1;
+	for (; oldString[i - 1]; i++)
+		ret[i] = oldString[i - 1];
+	if (_msize(oldString) > 0)
+		free(oldString);
+	*original = ret;
+}
+
+char* MyStrcpy(char* dest, char* src, size_t pos) {
+	if (src == NULL)
+		return dest;
+	return MyStrncpy(dest, src, pos, strlen(src));
+}
+
+char* MyStrncpy(char* dest, char* src, size_t pos, size_t n) {
+	if (dest == NULL)
+		return NULL;
+	if (src == NULL || n == 0)
+		return dest;
+	size_t len = strlen(dest);
+	if (strlen(src) < n)
+		return dest;
+	size_t i = 0;
+	for (; i < n; i++)
+		dest[i + pos] = src[i];
+	dest[i + pos] = 0;
+	return dest;
 }
